@@ -1,15 +1,30 @@
 <!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
 <meta name=robots content="noindex,nofollow"><title>Noxy</title>
 <body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#070b12;color:#dce6f0;font:16px/1.5 Segoe UI,system-ui,sans-serif">
-<p id=m style="max-width:420px;padding:24px;text-align:center">Opening Noxy...</p>
+<div id=m style="max-width:420px;padding:24px;text-align:center">Opening Noxy...</div>
 <script>
 (function () {
   var base = '/noxy-link', m = document.getElementById('m');
-  fetch(base + '/where.json?' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
-    var u = atob(j.w).replace(/\/+$/, ''), p = location.pathname;
-    var rest = p.indexOf(base) === 0 ? p.slice(base.length) : '';
-    if (rest === '/index.html' || rest === '/404.html') rest = '';
-    location.replace(u + rest + location.search + location.hash);
-  }).catch(function () { m.textContent = 'Noxy could not be reached just now. Try again in a minute.'; });
+  // ?keep: this page stays put once, so it can be saved as a home-screen icon or a bookmark; after that the icon goes straight through
+  var keep = /[?&]keep\b/.test(location.search), kept = false;
+  try { kept = localStorage.getItem('noxykept') === '1'; } catch (e) {}
+  function go() {
+    fetch(base + '/where.json?' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+      var u = atob(j.w).replace(/\/+$/, ''), p = location.pathname;
+      var rest = p.indexOf(base) === 0 ? p.slice(base.length) : '';
+      if (rest === '/index.html' || rest === '/404.html' || rest === '/') rest = '';
+      var q = location.search.replace(/([?&])keep\b=?[^&]*&?/, '$1').replace(/[?&]$/, '');
+      location.replace(u + rest + q + location.hash);
+    }).catch(function () { m.textContent = 'Noxy could not be reached just now. Try again in a minute.'; });
+  }
+  if (keep && !kept) {
+    m.innerHTML = '<p style="font-size:19px;margin:0 0 14px">Save this page</p>'
+      + '<p style="margin:0 0 18px;opacity:.8">Tap Share, then <b>Add to Home Screen</b> (or add a bookmark). That icon never changes and always opens Noxy.</p>'
+      + '<button id=b style="font:inherit;padding:10px 22px;border-radius:10px;border:1px solid #3a5a80;background:#12233a;color:#dce6f0">Saved. Open Noxy</button>';
+    document.getElementById('b').onclick = function () {
+      try { localStorage.setItem('noxykept', '1'); } catch (e) {}
+      m.textContent = 'Opening Noxy...'; go();
+    };
+  } else go();
 })();
 </script>
