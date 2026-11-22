@@ -1,7 +1,7 @@
 <!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
 <meta name=robots content="noindex,nofollow"><title>Noxy</title>
-<body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#070b12;color:#dce6f0;font:16px/1.5 Segoe UI,system-ui,sans-serif">
-<div id=m style="max-width:420px;padding:24px;text-align:center">Opening Noxy...</div>
+<body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#0b0d12;color:#dce6f0;font:16px/1.5 Segoe UI,system-ui,sans-serif">
+<div id=m style="max-width:420px;padding:24px;text-align:center"></div>
 <script>
 (function () {
   var base = '/noxy-link', m = document.getElementById('m');
@@ -23,7 +23,7 @@
       + '<button id=b style="font:inherit;padding:10px 22px;border-radius:10px;border:1px solid #3a5a80;background:#12233a;color:#dce6f0">Saved. Open Noxy</button>';
     document.getElementById('b').onclick = function () {
       try { localStorage.setItem('noxykept', '1'); } catch (e) {}
-      m.textContent = 'Opening Noxy...'; go();
+      m.textContent = ''; go();
     };
   } else go();
 })();
